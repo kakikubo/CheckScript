@@ -1,0 +1,8 @@
+$Id$
+2004-08-26  Kakikubo Teruo  <kakikubo@deb.sra-osc.ne.jp>
+
+	* ck: バグ発見。
+
+	どうやらSolarisやLinuxだと色づけが正しくされない見たい。
+	ちょっと調べなきゃ…。
+
