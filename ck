@@ -31,7 +31,7 @@ then
     LESSVERSION=`${PAGER} -V | head -1 | awk '{print FS + $2}' `
     if [ ${LESSVERSION} -gt 340 ]
     then 
-	LESS="-X -R -E" ; export LESS
+	LESS="-X -R "   ; export LESS
 	COLOR="YES"     ; export COLOR
     fi
 fi
