@@ -21,13 +21,15 @@ export PATH LANG
 # ページャが指定されているかどうかのチェック
 # 指定されていない場合はmoreを使用
 # PAGERにlessが設定されていた場合はカラーリングが有効となる。
+# 上でLANG=Cとしているので jlessにする必要はないだろう。
+# 懸念点としてはlessのバージョンまでをも見る事ができない点である。
 ############################################################
-# if [ "${PAGER}x" = "x" ]
-# then
-#     PAGER=more
-#     export $PAGER
-# fi
 PAGER=${PAGER:=more}
+if [ ${PAGER} = "jless" ]
+then
+    PAGER=less
+    export PAGER
+fi
 
 ############################################################
 #カラーリングを行うプログラム(perl)がインストールされていれば
@@ -243,7 +245,7 @@ CheckLog(){
  		  zcat ${LogList} | egrep "${GREPDATE}"  |  ${PAGER} 
  		  ;;
  	      *) 
-                   egrep "${GREPDATE}" ${LogList} |  ${PAGER} -R
+                   egrep "${GREPDATE}" ${LogList} |  ${PAGER} 
  		  ;;
  	  esac
        fi
@@ -487,3 +489,11 @@ CheckLog
 # a55 1
 # cal | sed -e "s/${TODAY}/${ESC}${PRE}${TODAY}${ESC}${POST}/g"
 # @
+
+# dateコマンドの参考URL
+# http://x68000.startshop.co.jp/~68user/unix/pickup?date/
+# しらべたところ、
+# env TZ=JST+167 (9+167 / 24 = 7.333...)つまり1週間前までは
+# 日付を取得する事ができる。
+# ただ、かんがえれば考える程なんか変だな…この動きは。
+# これって"JST+167"を"9+167"と解釈しているわけではないらしい。
