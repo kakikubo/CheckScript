@@ -10,9 +10,10 @@
 ############################################################
 # パスの指定。設定ファイルの読み込み。LANGはCを使用
 ############################################################
-PATH="/bin:/usr/bin:/usr/local/bin/"
+PATH="/usr/local/bin/:/usr/bin:/bin"
 . ./ck.conf
 LANG=C
+_HOSTNAME=`hostname | sed 's/\..*//'`
 
 export PATH LANG
 
@@ -56,7 +57,7 @@ END="\033[37;40;m"
 ############################################################
 Ostype(){
 
-    _HOSTNAME=`hostname | sed 's/\..*//'`
+
 
     case `uname -s` in
 	FreeBSD )    echo FREEBSD        ;;
@@ -106,7 +107,7 @@ case "${WHATOS}" in
 			ECHO='echo -e'
 			break
 			;;
-	FREEBSD) PS='/bin/ps -ax'
+	FREEBSD|MacOSX) PS='/bin/ps -ax'
 			ECHO='echo -e'
 			break
 			;;
@@ -114,7 +115,8 @@ case "${WHATOS}" in
 			ECHO='echo'
 			break
 			;;
-	*)		PS='/bin/ps -auxwww'
+	*)		PS='/bin/ps -auxwww'			ECHO='echo'
+			ECHO='echo'
 			;;
 esac
 
@@ -131,42 +133,42 @@ YYYY=`date +'%Y'`
 YY=`date +'%y'`
 MM=`date +'%m'`
 DD=`date +'%d'`
-GDATE7=`date -v -7d +'%b %e'`
-GDATE6=`date -v -6d +'%b %e'`
-GDATE5=`date -v -5d +'%b %e'`
-GDATE4=`date -v -4d +'%b %e'`
-GDATE3=`date -v -3d +'%b %e'`
-GDATE2=`date -v -2d +'%b %e'`
-GDATE1=`date -v -1d +'%b %e'`
-GDATE0=`date -v -0d +'%b %e'`
-OPT=
-GREPDATE="${GDATE1}|${GDATE0}"
-export GREPDATE
+# GDATE7=`date -v -7d +'%b %e'`
+# GDATE6=`date -v -6d +'%b %e'`
+# GDATE5=`date -v -5d +'%b %e'`
+# GDATE4=`date -v -4d +'%b %e'`
+# GDATE3=`date -v -3d +'%b %e'`
+# GDATE2=`date -v -2d +'%b %e'`
+# GDATE1=`date -v -1d +'%b %e'`
+# GDATE0=`date -v -0d +'%b %e'`
+# OPT=
+# GREPDATE="${GDATE1}|${GDATE0}"
+# export GREPDATE
 
-while getopts 1234567n OPT
-do
-  case $OPT in
-      7)  GREPDATE="${GDATE7}|${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      6)  GREPDATE="${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      5)  GREPDATE="${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      4)  GREPDATE="${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      3)  GREPDATE="${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      2)  GREPDATE="${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      1)  GREPDATE="${GDATE1}|${GDATE0}"
-	  ;;
-      n)  COLORMODE=OFF
-	  ;;
-      \?) echo "Usage: $0 [-1234567]" 1>&2 
-          exit 1   
-          ;;
-  esac
-done
+# while getopts 1234567n OPT
+# do
+#   case $OPT in
+#       7)  GREPDATE="${GDATE7}|${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       6)  GREPDATE="${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       5)  GREPDATE="${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       4)  GREPDATE="${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       3)  GREPDATE="${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       2)  GREPDATE="${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       1)  GREPDATE="${GDATE1}|${GDATE0}"
+# 	  ;;
+#       n)  COLORMODE=OFF
+# 	  ;;
+#       \?) echo "Usage: $0 [-1234567]" 1>&2 
+#           exit 1   
+#           ;;
+#   esac
+# done
 
 shift `expr $OPTIND - 1`
 
@@ -187,6 +189,22 @@ CheckProcess(){
       ${ECHO}  "#--- The check of a ${NOR}${ProcessList}${END} finished ---#" 
       read ans
     done
+}
+############################################################
+#関数名： ColoringStream
+#機能  ：標準入力から受けたデータを一定規則で色付けして出力する
+#入力  ：ログファイルなどの文字列
+#出力  ：コントロールコード(色情報)がついた文字列
+#
+############################################################
+
+ColoringStream(){
+    sed \
+	-e "s@\("$_HOSTNAME"\)@[34m\1[0m@g" \
+	-e 's@\(mach_kernel\)@[33m\1[0m@g' \
+	-e 's@\([Ee][Rr][Rr][Oo][Rr]\)@[31;40;1m\1[0m@g' \
+	-e 's@\([Ff][Aa][Ii][Ll]\)@[31;40;1m\1[0m@g' \
+	$1
 }
 
 ############################################################
@@ -214,15 +232,16 @@ CheckLog(){
 	          zcat ${LogList} | ${COLORISE}  | egrep "${GREPDATE}" | ${PAGER} -R
 		  ;;
 	      *) 
-  	          ${COLORISE} ${LogList} | egrep "${GREPDATE}" | ${PAGER} -R;;
+  	          ${COLORISE} ${LogList} | egrep "${GREPDATE}" | ${PAGER} -R
+		  ;;
 	  esac
       else
 	  case $LogList in
 	      *.gz) 
-		  zcat ${LogList} | egrep "${GREPDATE}"  |${PAGER} 
+		  zcat ${LogList} | egrep "${GREPDATE}"  | ${PAGER} 
 		  ;;
 	      *) 
-                  egrep "${GREPDATE}" ${LogList} | ${PAGER} -R
+                  egrep "${GREPDATE}" ${LogList} | ColoringStream | ${PAGER} -R
 		  ;;
 	  esac
       fi
@@ -285,10 +304,9 @@ CheckEtc(){
     done
 }
 
-
-CheckProcess
+#CheckProcess
 CheckLog
-CheckEtc
+#CheckEtc
 
 
 ### Check the /etc/hogehoge
@@ -340,3 +358,106 @@ CheckEtc
 #   titech              FreeBSD
 #   sendai1             Linux
 
+# head	1.2;
+# access;
+# symbols;
+# locks
+# 	kakikubo:1.2; strict;
+# comment	@# @;
+
+
+# 1.2
+# date	2002.10.25.12.52.20;	author kakikubo;	state Exp;
+# branches;
+# next	1.1;
+
+# 1.1
+# date	2002.10.25.12.32.37;	author kakikubo;	state Exp;
+# branches;
+# next	;
+
+
+# desc
+# @Start RCS
+# @
+
+
+# 1.2
+# log
+# @print color success
+# @
+# text
+# @#!/bin/sh
+# #
+# # colorcal.sh
+# #    calコマンドの出力結果を色をつけて表示するプログラム
+# #    日経Linux2002年7月号 より
+
+# # (豆知識)エスケープシーケンスの書式は次の通り
+
+
+# # エスケープシーケンスを利用した例
+# #
+# #  『ESC[3x;4y;zm』
+# #    
+# #  解説
+# #  x -> 文字色。0〜7までの数字を指定できる(以下参照)。
+# #  y -> 背景色。0〜7までの数字を指定できる(以下参照)。
+# #  z -> ボールド文字のON／OFFを指定する。1がON。なければOFF。
+# #  『数字と色の対応表』
+# #  0 黒
+# #  1 赤
+# #  2 緑
+# #  3 黄／茶
+# #  4 青
+# #  5 マゼンタ
+# #  6 シアン
+# #  7 白／灰
+
+# #  以下を実行すればよくわかる。
+# #  『-e』はエスケープシーケンスを有効にする為のオプション
+# #
+# #  echo -e "\033[31;40;1m黒地に赤い文字\033[37;40;m"
+
+# #エスケープシーケンス
+# ESC="\033["
+
+# #黒地に赤文字
+# PRE="31;40;1m"
+
+# #黒地に白文字
+# POST="37;40;m"
+
+# # 日付を取得する(必ず2桁)
+# #TODAY=`date '+%-d'` ###Linux用
+# TODAY=`date '+%d'`   ###FreeBSD用
+# #echo ${TODAY}
+
+# BEFORE=`cal | grep -w ${TODAY} | sed -e "s/\(.*\)${TODAY}.*/\1/g"`
+# AFTER=`cal  | grep -w ${TODAY} | sed -e "s/.*${TODAY}\(.*\)/\1/g"`
+
+# echo TODAY: ${TODAY}
+# echo before: ${BEFORE}
+# echo after: ${AFTER}
+# echo 
+
+# echo -e "${BEFORE}${ESC}${PRE}${TODAY}${ESC}${POST}${AFTER}"
+
+# @
+
+
+# 1.1
+# log
+# @Initial revision
+# @
+# text
+# @d37 1
+# a37 1
+# PRE="31;40;m"
+# d45 1
+# a45 1
+# echo ${TODAY}
+# d47 9
+# a55 1
+# cal | sed -e "s/${TODAY}/${ESC}${PRE}${TODAY}${ESC}${POST}/g"
+# @
