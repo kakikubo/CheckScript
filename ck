@@ -12,7 +12,7 @@
 ############################################################
 PATH="/usr/local/bin/:/usr/bin:/bin"
 . ${HOME}/.ck
-LANG=C
+#LANG=C
 _HOSTNAME=`hostname | sed 's/\..*//'`
 
 export PATH LANG
@@ -124,10 +124,10 @@ esac
 
 # +,-を必ず表記するにはこうするのだ。
 # printf "%+d" "`expr 3 + 5`"
-YYYY=`date +'%Y'`
-YY=`date +'%y'`
-MM=`date +'%m'`
-DD=`date +'%d'`
+YYYY=`LANG=C date +'%Y'`
+YY=`LANG=C date +'%y'`
+MM=`LANG=C date +'%m'`
+DD=`LANG=C date +'%d'`
 # GDATE7=`date -v -7d +'%b %e'`
 # GDATE6=`date -v -6d +'%b %e'`
 # GDATE5=`date -v -5d +'%b %e'`
@@ -137,8 +137,8 @@ DD=`date +'%d'`
 # GDATE1=`date -v -1d +'%b %e'`
 # GDATE0=`date +'%b %e'`
 # OPT=
-GDATE1=`env TZ=JST+15 date +'%b %e'`
-GDATE0=`env TZ=JST-9  date +'%b %e'`
+GDATE1=`env TZ=JST+15 LANG=C date +'%b %e'`
+GDATE0=`env TZ=JST-9  LANG=C date +'%b %e'`
 GREPDATE="${GDATE1}|${GDATE0}"
 #GREPDATE="${GDATE0}"
 # export GREPDATE
