@@ -11,7 +11,7 @@
 # パスの指定。設定ファイルの読み込み。LANGはCを使用
 ############################################################
 PATH="/usr/local/bin/:/usr/bin:/bin"
-. ./ck.conf
+. ${HOME}/.ck
 LANG=C
 _HOSTNAME=`hostname | sed 's/\..*//'`
 
@@ -30,17 +30,6 @@ then
     PAGER=less
     export PAGER
 fi
-
-############################################################
-#カラーリングを行うプログラム(perl)がインストールされていれば
-#それを使用する
-############################################################
-# if [ -f ${HOME}/bin/logcolorise.pl ]
-# then
-#     COLORISE="${HOME}/bin/logcolorise.pl"
-#     COLORMODE=ON
-#     export COLORISE COLORMODE
-# fi
 
 ############################################################
 #プロセスチェックに使用するカラーを定義
@@ -141,38 +130,38 @@ DD=`date +'%d'`
 # GDATE5=`date -v -5d +'%b %e'`
 # GDATE4=`date -v -4d +'%b %e'`
 # GDATE3=`date -v -3d +'%b %e'`
-# GDATE2=`date -v -2d +'%b %e'`
-# GDATE1=`date -v -1d +'%b %e'`
+GDATE2=`date -v -2d +'%b %e'`
+GDATE1=`date -v -1d +'%b %e'`
 GDATE0=`date +'%b %e'`
 # OPT=
-#### GREPDATE="${GDATE1}|${GDATE0}"
-GREPDATE="${GDATE0}"
+GREPDATE="${GDATE1}|${GDATE0}"
+#GREPDATE="${GDATE0}"
 # export GREPDATE
 
-# while getopts 1234567n OPT
-# do
-#   case $OPT in
-#       7)  GREPDATE="${GDATE7}|${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       6)  GREPDATE="${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       5)  GREPDATE="${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       4)  GREPDATE="${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       3)  GREPDATE="${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       2)  GREPDATE="${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       1)  GREPDATE="${GDATE1}|${GDATE0}"
-# 	  ;;
-#       n)  COLORMODE=OFF
-# 	  ;;
-#       \?) echo "Usage: $0 [-1234567]" 1>&2 
-#           exit 1   
-#           ;;
-#   esac
-# done
+while getopts 1234567n OPT
+do
+  case $OPT in
+      7)  GREPDATE="${GDATE7}|${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+	  ;;
+      6)  GREPDATE="${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+	  ;;
+      5)  GREPDATE="${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+	  ;;
+      4)  GREPDATE="${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+	  ;;
+      3)  GREPDATE="${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+	  ;;
+      2)  GREPDATE="${GDATE2}|${GDATE1}|${GDATE0}"
+	  ;;
+      1)  GREPDATE="${GDATE1}|${GDATE0}"
+	  ;;
+      n)  COLORMODE=OFF
+	  ;;
+      \?) echo "Usage: $0 [-1234567]" 1>&2 
+          exit 1   
+          ;;
+  esac
+done
 
 shift `expr $OPTIND - 1`
 
@@ -214,8 +203,7 @@ ColoringStream(){
 
 ############################################################
 #関数名：CheckLog
-#機能  ：ログのチェック。perlがインストールされていてPAGERにlessが
-#       指定されている場合はログをカラーで表示。
+#機能  ：ログのチェック。
 #入力  ：$LogList変数に書かれたログのリスト
 #出力  ：ログをページャで見る
 #
@@ -225,26 +213,32 @@ CheckLog(){
     do
       LogList=`echo ${LogList} | sed -e "s/YYMMDD/${YY}${MM}${DD}/"`
       LogList=`echo ${LogList} | sed -e "s/YYYYMMDD/${YYYY}${MM}${DD}/"`
+      FILETYPE=`basename ${LogList}`
 	  
       ${ECHO}  "### Log check ( ${NOR}${LogList}${END} ) ###"
       read ans
 
       if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" ] 
       then
-	  case ${Loglist} in
- 	      *.gz) 
+	  case ${FILETYPE} in
+ 	      *.gz)
+		  echo "Hello!!!  ${LogList}"
  	          zcat ${LogList} | egrep "${GREPDATE}" | ColoringStream | ${PAGER} -R
  		  ;;
  	      *) 
+		  echo "KoNiChiwa! a${LogList}b"
    	          egrep "${GREPDATE}" ${LogList}  | ColoringStream |${PAGER} -R
  		  ;;
  	  esac
        else
- 	  case $LogList in
+ 	  case ${FILETYPE} in
  	      *.gz) 
+		  echo "NiiHao! ${LogList}"
  		  zcat ${LogList} | egrep "${GREPDATE}"  |  ${PAGER} 
  		  ;;
  	      *) 
+		  echo "BARO! ${LogList}"
+                   egrep "${GREPDATE}" ${LogList} |  ${PAGER} -R
                    egrep "${GREPDATE}" ${LogList} |  ${PAGER} 
  		  ;;
  	  esac
@@ -332,7 +326,7 @@ CheckEtc(){
     done
 }
 
-#CheckProcess
+CheckProcess
 CheckLog
 #CheckEtc
 
