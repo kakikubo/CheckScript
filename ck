@@ -200,6 +200,7 @@ Ignoring(){
 ColoringStream(){
     sed \
 	-e "s@\("$_HOSTNAME"\)@[34;47;1m\1[0m@g" \
+	-e 's@\([Oo][Nn][Ll][Ii][Nn][Ee]\)@[33m\1[0m@g' \
 	-e "s@\($GDATE1\)@[35;1m\1[0m@g" \
 	-e "s@\($GDATE0\)@[35;1m\1[0m@g" \
 	-e 's@\(mach_kernel\)@[33m\1[0m@g' \
@@ -208,6 +209,7 @@ ColoringStream(){
 	-e 's@\([Ff][Aa][Ii][Ll]\)@[33;40;1m\1[0m@g' \
 	-e 's@\([Ww][Aa][Rr][Nn][Ii][Nn][Gg]\)@[33;40;1m\1[0m@g' \
 	-e 's@\([Ff][Aa][Tt][Aa][Ll]\)@[31;40;1m\1[0m@g' \
+	-e 's@\([Oo][Ff][Ff][Ll][Ii][Nn][Ee]\)@[31;40;1m\1[0m@g' \
 	$1
 }
 ############################################################
@@ -364,12 +366,39 @@ CheckEtc(){
 	      
       else
 	  echo "###--- $c was Unchanged. Please Enter ---###"
-	  read a
+	  read ans
       fi
     done
 }
 
+############################################################
+#´Ø¿ôÌ¾¡§TapeCheck
+#µ¡Ç½  ¡§¥Æ¡¼¥×¤¬¥»¥Ã¥È¤µ¤ì¤Æ¤¤¤ë¤«¤É¤¦¤«¤ò¥Á¥§¥Ã¥¯¡£
+#ÆþÎÏ  ¡§.ck¤Ë TAPE='/dev/nst0'¤Î¤è¤¦¤Ëµ­½Ò¡£ÊÑ¿ô¤¬Â¸ºß¤·¤Ê¤¤¾ì¹ç¤Ï
+#       ¡¡¥Á¥§¥Ã¥¯¼«ÂÎ¤ò¹Ô¤ï¤Ê¤¤¡¡¡¡¡¡¡¡
+#½ÐÎÏ  ¡§Àµ¾ï¤Ë¥Þ¥¦¥ó¥È¤µ¤ì¤Æ¤¤¤ë¤«¤É¤¦¤«¤À¤±¡¢¿§ÉÕ¤­
+#¡¡¡¡¡¡¡¡¤ÇÉ½¼¨¤¹¤ë¡£
+############################################################
+TapeCheck(){
 
+echo "##### Tape Device Check #####"
+echo "Please hit ENTER to continue."
+
+        read ans
+        ${SUDO} mt -f ${TAPE} status | grep ONLINE
+        if [ $? -eq 0 ]; then
+                echo 'Tape is Online' | ColoringStream 
+                exit 0
+        else
+	        echo 'Tape is Offline' | ColoringStream 
+        fi
+echo
+}
+
+
+
+
+### Main ###
 SUDO=${SUDO:="NO"}
 if [ ${SUDO} = "yes" ]
 then
@@ -377,10 +406,17 @@ then
 else
     SUDO=""
 fi 
+
 CheckProcess
 CheckSyslog
 CheckLog
 CheckEtc
+
+TAPE=${TAPE:="NO"}
+if [ ${TAPE} != "NO" ]
+then
+    TapeCheck
+fi 
 
 
 # memo
