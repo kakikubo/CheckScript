@@ -66,6 +66,7 @@ Ostype(){
 	IRIX    )    echo SGI            ;;
         OSF1    )    echo DECOSF         ;;
         ULTRIX  )    echo ULTRIX         ;;
+        Darwin  )    echo MacOSX         ;;
         SunOS   )    case `uname -r` in
 			4*)  echo SUNBSD    ;;
 			5*)  echo SOLARIS   ;;
@@ -100,6 +101,23 @@ case "${WHATOS}" in
 	*)		PS='/bin/ps -auxwww'
 			;;
 esac
+case "${WHATOS}" in
+	LINUX) PS='/bin/ps -ax'
+			ECHO='echo -e'
+			break
+			;;
+	FREEBSD) PS='/bin/ps -ax'
+			ECHO='echo -e'
+			break
+			;;
+	SOLARIS)PS='/bin/ps -ef'
+			ECHO='echo'
+			break
+			;;
+	*)		PS='/bin/ps -auxwww'
+			;;
+esac
+
 
 ############################################################
 #関数名：なし
