@@ -379,7 +379,7 @@ fi
 CheckProcess
 CheckSyslog
 CheckLog
-#CheckEtc
+CheckEtc
 
 
 ### Check the /etc/hogehoge
