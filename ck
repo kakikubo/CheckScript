@@ -8,7 +8,7 @@
 #
 
 ############################################################
-# $B%Q%9$N;XDj!#@_Dj%U%!%$%k$NFI$_9~$_!#(BLANG$B$O(BC$B$r;HMQ(B
+# ¥Ñ¥¹¤Î»ØÄê¡£ÀßÄê¥Õ¥¡¥¤¥ë¤ÎÆÉ¤ß¹þ¤ß¡£LANG¤ÏC¤ò»ÈÍÑ
 ############################################################
 PATH="/usr/local/bin/:/usr/bin:/bin"
 . ./ck.conf
@@ -18,8 +18,9 @@ _HOSTNAME=`hostname | sed 's/\..*//'`
 export PATH LANG
 
 ############################################################
-#$B%Z!<%8%c$,;XDj$5$l$F$$$k$+$I$&$+$N%A%'%C%/(B
-#$B;XDj$5$l$F$$$J$$>l9g$O(Bmore$B$r;HMQ(B
+# ¥Ú¡¼¥¸¥ã¤¬»ØÄê¤µ¤ì¤Æ¤¤¤ë¤«¤É¤¦¤«¤Î¥Á¥§¥Ã¥¯
+# »ØÄê¤µ¤ì¤Æ¤¤¤Ê¤¤¾ì¹ç¤Ïmore¤ò»ÈÍÑ
+# PAGER¤Ëless¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤¿¾ì¹ç¤Ï¥«¥é¡¼¥ê¥ó¥°¤¬Í­¸ú¤È¤Ê¤ë¡£
 ############################################################
 # if [ "${PAGER}x" = "x" ]
 # then
@@ -29,18 +30,18 @@ export PATH LANG
 PAGER=${PAGER:=more}
 
 ############################################################
-#$B%+%i!<%j%s%0$r9T$&%W%m%0%i%`(B(perl)$B$,%$%s%9%H!<%k$5$l$F$$$l$P(B
-#$B$=$l$r;HMQ$9$k(B
+#¥«¥é¡¼¥ê¥ó¥°¤ò¹Ô¤¦¥×¥í¥°¥é¥à(perl)¤¬¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤ì¤Ð
+#¤½¤ì¤ò»ÈÍÑ¤¹¤ë
 ############################################################
-if [ -f ${HOME}/bin/logcolorise.pl ]
-then
-    COLORISE="${HOME}/bin/logcolorise.pl"
-    COLORMODE=ON
-    export COLORISE COLORMODE
-fi
+# if [ -f ${HOME}/bin/logcolorise.pl ]
+# then
+#     COLORISE="${HOME}/bin/logcolorise.pl"
+#     COLORMODE=ON
+#     export COLORISE COLORMODE
+# fi
 
 ############################################################
-#$B%W%m%;%9%A%'%C%/$K;HMQ$9$k%+%i!<$rDj5A(B
+#¥×¥í¥»¥¹¥Á¥§¥Ã¥¯¤Ë»ÈÍÑ¤¹¤ë¥«¥é¡¼¤òÄêµÁ
 ############################################################
 NOR="\033[32;40;1m"
 ERR="\033[31;40;1m"
@@ -49,10 +50,10 @@ END="\033[37;40;m"
 
 
 ############################################################
-#$B4X?tL>!'(BOstype
-#$B5!G=(B  $B!'%W%m%0%i%`$r<B9T$9$k%[%9%H$N(BOS$B$rH=JL$9$k!#(B
-#$BF~NO(B  $B!'$J$7(B
-#$B=PNO(B  $B!'(BOS$B$N<oN`(B
+#´Ø¿ôÌ¾¡§Ostype
+#µ¡Ç½  ¡§¥×¥í¥°¥é¥à¤ò¼Â¹Ô¤¹¤ë¥Û¥¹¥È¤ÎOS¤òÈ½ÊÌ¤¹¤ë¡£
+#ÆþÎÏ  ¡§¤Ê¤·
+#½ÐÎÏ  ¡§OS¤Î¼ïÎà
 #
 ############################################################
 Ostype(){
@@ -82,8 +83,8 @@ Ostype(){
 }
 
 ############################################################
-#$B4X?tL>!'$J$7(B
-#$B5!G=(B  $B!'(BOS$B$K$h$C$F;HMQ$9$k%3%^%s%I$rH=JL(B
+#´Ø¿ôÌ¾¡§¤Ê¤·
+#µ¡Ç½  ¡§OS¤Ë¤è¤Ã¤Æ»ÈÍÑ¤¹¤ë¥³¥Þ¥ó¥É¤òÈ½ÊÌ
 ############################################################
 WHATOS=`Ostype`
 case "${WHATOS}" in
@@ -122,11 +123,11 @@ esac
 
 
 ############################################################
-#$B4X?tL>!'$J$7(B
-#$B5!G=(B  $B!'%m%0%U%!%$%k$+$i3:EvF|IU$N$_$r%T%C%/%"%C%W!#(B
-#       ck$B%3%^%s%I<+BN$K(B-[1-7]$B$r;XDj$G$-$k!#%G%U%)%k%H$O(B1$B$G!"(B
-#       $BEvF|!"A0F|$r8+$k!#(B-7$B$,;XDj$5$l$?>l9g$OEvF|$+$i(B7$BF|A0$^$G(B
-#       $B%T%C%/%"%C%W$7$F8+$k!#(B
+#´Ø¿ôÌ¾¡§¤Ê¤·
+#µ¡Ç½  ¡§¥í¥°¥Õ¥¡¥¤¥ë¤«¤é³ºÅöÆüÉÕ¤Î¤ß¤ò¥Ô¥Ã¥¯¥¢¥Ã¥×¡£
+#       ck¥³¥Þ¥ó¥É¼«ÂÎ¤Ë-[1-7]¤ò»ØÄê¤Ç¤­¤ë¡£¥Ç¥Õ¥©¥ë¥È¤Ï1¤Ç¡¢
+#       ÅöÆü¡¢Á°Æü¤ò¸«¤ë¡£-7¤¬»ØÄê¤µ¤ì¤¿¾ì¹ç¤ÏÅöÆü¤«¤é7ÆüÁ°¤Þ¤Ç
+#       ¥Ô¥Ã¥¯¥¢¥Ã¥×¤·¤Æ¸«¤ë¡£
 #
 ############################################################
 YYYY=`date +'%Y'`
@@ -140,9 +141,10 @@ DD=`date +'%d'`
 # GDATE3=`date -v -3d +'%b %e'`
 # GDATE2=`date -v -2d +'%b %e'`
 # GDATE1=`date -v -1d +'%b %e'`
-# GDATE0=`date -v -0d +'%b %e'`
+GDATE0=`date +'%b %e'`
 # OPT=
-# GREPDATE="${GDATE1}|${GDATE0}"
+#### GREPDATE="${GDATE1}|${GDATE0}"
+GREPDATE="${GDATE0}"
 # export GREPDATE
 
 # while getopts 1234567n OPT
@@ -173,10 +175,10 @@ DD=`date +'%d'`
 shift `expr $OPTIND - 1`
 
 ############################################################
-#$B4X?tL>!'(BCheckProcess
-#$B5!G=(B  $B!'%W%m%;%9$N%A%'%C%/(B
-#$BF~NO(B  $B!'(B$PROCESS$BJQ?t$K=q$+$l$?%W%m%;%9$N%j%9%H(B
-#$B=PNO(B  $B!'%W%m%;%9$,B8:_$9$k$+$I$&$+$r=PNO(B
+#´Ø¿ôÌ¾¡§CheckProcess
+#µ¡Ç½  ¡§¥×¥í¥»¥¹¤Î¥Á¥§¥Ã¥¯
+#ÆþÎÏ  ¡§$PROCESSÊÑ¿ô¤Ë½ñ¤«¤ì¤¿¥×¥í¥»¥¹¤Î¥ê¥¹¥È
+#½ÐÎÏ  ¡§¥×¥í¥»¥¹¤¬Â¸ºß¤¹¤ë¤«¤É¤¦¤«¤ò½ÐÎÏ
 #
 ############################################################
 CheckProcess(){
@@ -191,10 +193,10 @@ CheckProcess(){
     done
 }
 ############################################################
-#$B4X?tL>!'(B ColoringStream
-#$B5!G=(B  $B!'I8=`F~NO$+$i<u$1$?%G!<%?$r0lDj5,B'$G?'IU$1$7$F=PNO$9$k(B
-#$BF~NO(B  $B!'%m%0%U%!%$%k$J$I$NJ8;zNs(B
-#$B=PNO(B  $B!'%3%s%H%m!<%k%3!<%I(B($B?'>pJs(B)$B$,$D$$$?J8;zNs(B
+#´Ø¿ôÌ¾¡§ ColoringStream
+#µ¡Ç½  ¡§É¸½àÆþÎÏ¤«¤é¼õ¤±¤¿¥Ç¡¼¥¿¤ò°ìÄêµ¬Â§¤Ç¿§ÉÕ¤±¤·¤Æ½ÐÎÏ¤¹¤ë
+#ÆþÎÏ  ¡§¥í¥°¥Õ¥¡¥¤¥ë¤Ê¤É¤ÎÊ¸»úÎó
+#½ÐÎÏ  ¡§¥³¥ó¥È¥í¡¼¥ë¥³¡¼¥É(¿§¾ðÊó)¤¬¤Ä¤¤¤¿Ê¸»úÎó
 #
 ############################################################
 
@@ -208,11 +210,11 @@ ColoringStream(){
 }
 
 ############################################################
-#$B4X?tL>!'(BCheckLog
-#$B5!G=(B  $B!'%m%0$N%A%'%C%/!#(Bperl$B$,%$%s%9%H!<%k$5$l$F$$$F(BPAGER$B$K(Bless$B$,(B
-#       $B;XDj$5$l$F$$$k>l9g$O%m%0$r%+%i!<$GI=<(!#(B
-#$BF~NO(B  $B!'(B$LogList$BJQ?t$K=q$+$l$?%m%0$N%j%9%H(B
-#$B=PNO(B  $B!'%m%0$r%Z!<%8%c$G8+$k(B
+#´Ø¿ôÌ¾¡§CheckLog
+#µ¡Ç½  ¡§¥í¥°¤Î¥Á¥§¥Ã¥¯¡£perl¤¬¥¤¥ó¥¹¥È¡¼¥ë¤µ¤ì¤Æ¤¤¤ÆPAGER¤Ëless¤¬
+#       »ØÄê¤µ¤ì¤Æ¤¤¤ë¾ì¹ç¤Ï¥í¥°¤ò¥«¥é¡¼¤ÇÉ½¼¨¡£
+#ÆþÎÏ  ¡§$LogListÊÑ¿ô¤Ë½ñ¤«¤ì¤¿¥í¥°¤Î¥ê¥¹¥È
+#½ÐÎÏ  ¡§¥í¥°¤ò¥Ú¡¼¥¸¥ã¤Ç¸«¤ë
 #
 ############################################################
 CheckLog(){
@@ -224,27 +226,50 @@ CheckLog(){
       ${ECHO}  "### Log check ( ${NOR}${LogList}${END} ) ###"
       read ans
 
+      if [ "${PAGER}" = "less" ] 
+      then
+	  case ${Loglist} in
+ 	      *.gz) 
+ 	          zcat ${LogList} | egrep "${GREPDATE}" | ColoringStream | ${PAGER} -R
+ 		  ;;
+ 	      *) 
+   	          egrep "${GREPDATE}" ${LogList}  | ColoringStream |${PAGER} -R
+ 		  ;;
+ 	  esac
+       else
+ 	  case $LogList in
+ 	      *.gz) 
+ 		  zcat ${LogList} | egrep "${GREPDATE}"  | ${PAGER} 
+ 		  ;;
+ 	      *) 
+                   egrep "${GREPDATE}" ${LogList} | ColoringStream | ${PAGER} -R
+ 		  ;;
+ 	  esac
+       fi
 
-      if [ "${WHATOS}" = "FREEBSD" -a "${COLORMODE}" = "ON" ]
-      then 
-	  case $LogList in
-	      *.gz) 
-	          zcat ${LogList} | ${COLORISE}  | egrep "${GREPDATE}" | ${PAGER} -R
-		  ;;
-	      *) 
-  	          ${COLORISE} ${LogList} | egrep "${GREPDATE}" | ${PAGER} -R
-		  ;;
-	  esac
-      else
-	  case $LogList in
-	      *.gz) 
-		  zcat ${LogList} | egrep "${GREPDATE}"  | ${PAGER} 
-		  ;;
-	      *) 
-                  egrep "${GREPDATE}" ${LogList} | ColoringStream | ${PAGER} -R
-		  ;;
-	  esac
-      fi
+
+#       if [ "${WHATOS}" = "FREEBSD" -a "${COLORMODE}" = "ON" ]
+#       then 
+# 	  case $LogList in
+# 	      *.gz) 
+# 	          zcat ${LogList} | ${COLORISE}  | egrep "${GREPDATE}" | ${PAGER} -R
+# 		  ;;
+# 	      *) 
+#   	          ${COLORISE} ${LogList} | egrep "${GREPDATE}" | ${PAGER} -R
+# 		  ;;
+# 	  esac
+#       else
+# 	  case $LogList in
+# 	      *.gz) 
+# 		  zcat ${LogList} | egrep "${GREPDATE}"  | ${PAGER} 
+# 		  ;;
+# 	      *) 
+#                   egrep "${GREPDATE}" ${LogList} | ColoringStream | ${PAGER} -R
+# 		  ;;
+# 	  esac
+#       fi
+
+
       ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
       read ans
     done
@@ -254,11 +279,11 @@ CheckLog(){
 
 
 ############################################################
-#$B4X?tL>!'(BCheckEtc
-#$B5!G=(B  $B!'<g$K(B/etc$BG[2<$N%U%!%$%k$N99?73NG'(B
-#$BF~NO(B  $B!'(BETCHECK$BJQ?t$h$jEO$5$l$k%F%-%9%H%U%!%$%k!#(B
-#$B=PNO(B  $B!'%m!<%+%k$K$b$C$F$$$k%F%-%9%H%U%!%$%k$H$N(Bdiff,$B$*$h$S(B
-#       $B99?73NG'8e$N%m!<%+%k%U%!%$%k$N99?7(B($B2?$$$C$F$k$+ITL@(B)
+#´Ø¿ôÌ¾¡§CheckEtc
+#µ¡Ç½  ¡§¼ç¤Ë/etcÇÛ²¼¤Î¥Õ¥¡¥¤¥ë¤Î¹¹¿·³ÎÇ§
+#ÆþÎÏ  ¡§ETCHECKÊÑ¿ô¤è¤êÅÏ¤µ¤ì¤ë¥Æ¥­¥¹¥È¥Õ¥¡¥¤¥ë¡£
+#½ÐÎÏ  ¡§¥í¡¼¥«¥ë¤Ë¤â¤Ã¤Æ¤¤¤ë¥Æ¥­¥¹¥È¥Õ¥¡¥¤¥ë¤È¤Îdiff,¤ª¤è¤Ó
+#       ¹¹¿·³ÎÇ§¸å¤Î¥í¡¼¥«¥ë¥Õ¥¡¥¤¥ë¤Î¹¹¿·(²¿¤¤¤Ã¤Æ¤ë¤«ÉÔÌÀ)
 #
 ############################################################
 CheckEtc(){
@@ -310,7 +335,7 @@ CheckLog
 
 
 ### Check the /etc/hogehoge
-###  $B$3$3$O$^$?$D$/$k$3$H$K$9$k$+!D(B
+###  ¤³¤³¤Ï¤Þ¤¿¤Ä¤¯¤ë¤³¤È¤Ë¤¹¤ë¤«¡Ä
 # CheckEtc(){
 #     for ETC in `echo ${CHECKETC}`
 #     do
@@ -327,25 +352,25 @@ CheckLog
 #     do
 #     if [ $l = $I ] 
 #     then
-#       echo $I'$B$O%m%0%U%!%$%k(B'
+#       echo $I'¤Ï¥í¥°¥Õ¥¡¥¤¥ë'
 #       break
 #     else
-#       echo $I'$B$OL5;k$9$kJ8;zNs(B'
+#       echo $I'¤ÏÌµ»ë¤¹¤ëÊ¸»úÎó'
 #       IG=${IG}$I"|"
 #       break
 #     fi
 #   done
 # done
 # IG="${IG}grep)"
-# echo '$BL5;k$9$k$b$8$l$DAm9g(B'$IG
+# echo 'Ìµ»ë¤¹¤ë¤â¤¸¤ì¤ÄÁí¹ç'$IG
 # #exit
 
 
 
 #  Search the Os type Function
 #
-# `uname -s`$B%3%^%s%I$N7k2L$K$h$C$F%3%^%s%I(B(ps$B$J$I(B)$B$rJ,4t=hM}$5$;$l$P(B
-# $BHFMQ@-$,A}$9$N$G$O!)(B
+# `uname -s`¥³¥Þ¥ó¥É¤Î·ë²Ì¤Ë¤è¤Ã¤Æ¥³¥Þ¥ó¥É(ps¤Ê¤É)¤òÊ¬´ô½èÍý¤µ¤»¤ì¤Ð
+# ÈÆÍÑÀ­¤¬Áý¤¹¤Î¤Ç¤Ï¡©
 
 
 # memo
@@ -390,47 +415,47 @@ CheckLog
 # @#!/bin/sh
 # #
 # # colorcal.sh
-# #    cal$B%3%^%s%I$N=PNO7k2L$r?'$r$D$1$FI=<($9$k%W%m%0%i%`(B
-# #    $BF|7P(BLinux2002$BG/(B7$B7n9f(B $B$h$j(B
+# #    cal¥³¥Þ¥ó¥É¤Î½ÐÎÏ·ë²Ì¤ò¿§¤ò¤Ä¤±¤ÆÉ½¼¨¤¹¤ë¥×¥í¥°¥é¥à
+# #    Æü·ÐLinux2002Ç¯7·î¹æ ¤è¤ê
 
-# # ($BF&CN<1(B)$B%(%9%1!<%W%7!<%1%s%9$N=q<0$O<!$NDL$j(B
+# # (Æ¦ÃÎ¼±)¥¨¥¹¥±¡¼¥×¥·¡¼¥±¥ó¥¹¤Î½ñ¼°¤Ï¼¡¤ÎÄÌ¤ê
 
 
-# # $B%(%9%1!<%W%7!<%1%s%9$rMxMQ$7$?Nc(B
+# # ¥¨¥¹¥±¡¼¥×¥·¡¼¥±¥ó¥¹¤òÍøÍÑ¤·¤¿Îã
 # #
-# #  $B!X(BESC[3x;4y;zm$B!Y(B
+# #  ¡ØESC[3x;4y;zm¡Ù
 # #    
-# #  $B2r@b(B
-# #  x -> $BJ8;z?'!#(B0$B!A(B7$B$^$G$N?t;z$r;XDj$G$-$k(B($B0J2<;2>H(B)$B!#(B
-# #  y -> $BGX7J?'!#(B0$B!A(B7$B$^$G$N?t;z$r;XDj$G$-$k(B($B0J2<;2>H(B)$B!#(B
-# #  z -> $B%\!<%k%IJ8;z$N(BON$B!?(BOFF$B$r;XDj$9$k!#(B1$B$,(BON$B!#$J$1$l$P(BOFF$B!#(B
-# #  $B!X?t;z$H?'$NBP1~I=!Y(B
-# #  0 $B9u(B
-# #  1 $B@V(B
-# #  2 $BNP(B
-# #  3 $B2+!?Cc(B
-# #  4 $B@D(B
-# #  5 $B%^%<%s%?(B
-# #  6 $B%7%"%s(B
-# #  7 $BGr!?3%(B
+# #  ²òÀâ
+# #  x -> Ê¸»ú¿§¡£0¡Á7¤Þ¤Ç¤Î¿ô»ú¤ò»ØÄê¤Ç¤­¤ë(°Ê²¼»²¾È)¡£
+# #  y -> ÇØ·Ê¿§¡£0¡Á7¤Þ¤Ç¤Î¿ô»ú¤ò»ØÄê¤Ç¤­¤ë(°Ê²¼»²¾È)¡£
+# #  z -> ¥Ü¡¼¥ë¥ÉÊ¸»ú¤ÎON¡¿OFF¤ò»ØÄê¤¹¤ë¡£1¤¬ON¡£¤Ê¤±¤ì¤ÐOFF¡£
+# #  ¡Ø¿ô»ú¤È¿§¤ÎÂÐ±þÉ½¡Ù
+# #  0 ¹õ
+# #  1 ÀÖ
+# #  2 ÎÐ
+# #  3 ²«¡¿Ãã
+# #  4 ÀÄ
+# #  5 ¥Þ¥¼¥ó¥¿
+# #  6 ¥·¥¢¥ó
+# #  7 Çò¡¿³¥
 
-# #  $B0J2<$r<B9T$9$l$P$h$/$o$+$k!#(B
-# #  $B!X(B-e$B!Y$O%(%9%1!<%W%7!<%1%s%9$rM-8z$K$9$k0Y$N%*%W%7%g%s(B
+# #  °Ê²¼¤ò¼Â¹Ô¤¹¤ì¤Ð¤è¤¯¤ï¤«¤ë¡£
+# #  ¡Ø-e¡Ù¤Ï¥¨¥¹¥±¡¼¥×¥·¡¼¥±¥ó¥¹¤òÍ­¸ú¤Ë¤¹¤ë°Ù¤Î¥ª¥×¥·¥ç¥ó
 # #
-# #  echo -e "\033[31;40;1m$B9uCO$K@V$$J8;z(B\033[37;40;m"
+# #  echo -e "\033[31;40;1m¹õÃÏ¤ËÀÖ¤¤Ê¸»ú\033[37;40;m"
 
-# #$B%(%9%1!<%W%7!<%1%s%9(B
+# #¥¨¥¹¥±¡¼¥×¥·¡¼¥±¥ó¥¹
 # ESC="\033["
 
-# #$B9uCO$K@VJ8;z(B
+# #¹õÃÏ¤ËÀÖÊ¸»ú
 # PRE="31;40;1m"
 
-# #$B9uCO$KGrJ8;z(B
+# #¹õÃÏ¤ËÇòÊ¸»ú
 # POST="37;40;m"
 
-# # $BF|IU$r<hF@$9$k(B($BI,$:(B2$B7e(B)
-# #TODAY=`date '+%-d'` ###Linux$BMQ(B
-# TODAY=`date '+%d'`   ###FreeBSD$BMQ(B
+# # ÆüÉÕ¤ò¼èÆÀ¤¹¤ë(É¬¤º2·å)
+# #TODAY=`date '+%-d'` ###LinuxÍÑ
+# TODAY=`date '+%d'`   ###FreeBSDÍÑ
 # #echo ${TODAY}
 
 # BEFORE=`cal | grep -w ${TODAY} | sed -e "s/\(.*\)${TODAY}.*/\1/g"`
