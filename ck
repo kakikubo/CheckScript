@@ -178,8 +178,14 @@ shift `expr $OPTIND - 1`
 #
 ############################################################
 Ignoring(){
-    egrep -v ${IGNORE} $1
+    if [ "${IGNORE}x" = "x" ]
+    then
+	cat $1
+    else
+	egrep -v ${IGNORE} $1 
+    fi
 }
+
 
 ############################################################
 #´Ø¿ôÌ¾¡§ ColoringStream
@@ -192,11 +198,12 @@ Ignoring(){
 
 ColoringStream(){
     sed \
-	-e "s@\("$_HOSTNAME"\)@[34;1m\1[0m@g" \
+	-e "s@\("$_HOSTNAME"\)@[34;47;1m\1[0m@g" \
 	-e 's@\(mach_kernel\)@[33m\1[0m@g' \
 	-e 's@\([Ee][Rr][Rr][Oo][Rr]\)@[31;40;1m\1[0m@g' \
 	-e 's@\([Cc][Rr][Aa][Ss][Hh]\)@[31;40;1m\1[0m@g' \
-	-e 's@\([Ff][Aa][Ii][Ll]\)@[37;41;1m\1[0m@g' \
+	-e 's@\([Ff][Aa][Ii][Ll]\)@[33;40;1m\1[0m@g' \
+	-e 's@\([Ww][Aa][Rr][Nn][Ii][Nn][Gg]\)@[33;46;1m\1[0m@g' \
 	-e 's@\([Ff][Aa][Tt][Aa][Ll]\)@[31;40;1m\1[0m@g' \
 	$1
 }
@@ -240,19 +247,23 @@ CheckLog(){
       then
 	  case ${FILETYPE} in
  	      *.gz)
+		  echo "hello1"
  	          ${SUDO} zcat ${LogList} | Ignoring | egrep "${GREPDATE}" | ColoringStream | ${PAGER} -R
  		  ;;
  	      *) 
-   	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring | ColoringStream |${PAGER} -R
+		  echo "hello2"
+   	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring |ColoringStream |${PAGER} -R
  		  ;;
  	  esac
        else
  	  case ${FILETYPE} in
  	      *.gz) 
- 		  ${SUDO} zcat ${LogList} | Ignoring | egrep "${GREPDATE}"  |  ${PAGER} 
+		  echo "hello3"
+ 		  ${SUDO} zcat ${LogList} | Ignoring |egrep "${GREPDATE}"  |  ${PAGER} 
  		  ;;
  	      *) 
-                  ${SUDO} egrep "${GREPDATE}" ${LogList} | Ignoring |  ${PAGER} 
+		  echo "hello4"
+                  ${SUDO} egrep "${GREPDATE}" ${LogList} | Ignoring|  ${PAGER} 
  		  ;;
  	  esac
        fi
