@@ -14,7 +14,10 @@ PROCESS="httpd\
 SYSLOG="/var/log/messages \
 	/var/log/messages.0.gz"
 
-#
+# テープデバイスをチェックする時は以下の変数に
+# 直接デバイスをかきこんでください。
+TAPE="/dev/nst0"
+
 # 以下は普通のファイルを閲覧します。一応、色付けもします。
 #
 LOG="/var/log/xdm.log"
