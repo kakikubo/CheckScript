@@ -32,6 +32,26 @@ then
 fi
 
 ############################################################
+# sudo¤ò»ÈÍÑ¤¹¤ë°Ù¤Î´Ø¿ô¤òÄêµÁ
+############################################################
+UsingSudo(){
+    while :
+      do 
+      echo "--- Please Input sra passwd for \"sudo\". ---"
+      echo ""
+      sudo -v 
+      if [ $? -eq 0 ];then
+	  echo "--- Checking sra passwd... OK! Go ahead ! ---"
+	  SUDO="sudo"
+	  break  
+      else
+	  :
+      fi
+      
+    done
+}
+
+############################################################
 #¥×¥í¥»¥¹¥Á¥§¥Ã¥¯¤Ë»ÈÍÑ¤¹¤ë¥«¥é¡¼¤òÄêµÁ
 ############################################################
 NOR="\033[32;40;1m"
@@ -94,24 +114,6 @@ case "${WHATOS}" in
 	*)		PS='/bin/ps -auxwww'
 			;;
 esac
-case "${WHATOS}" in
-	LINUX) PS='/bin/ps -ax'
-			ECHO='echo -e'
-			break
-			;;
-	FREEBSD|MacOSX) PS='/bin/ps -ax'
-			ECHO='echo -e'
-			break
-			;;
-	SOLARIS)PS='/bin/ps -ef'
-			ECHO='echo'
-			break
-			;;
-	*)		PS='/bin/ps -auxwww'			ECHO='echo'
-			ECHO='echo'
-			;;
-esac
-
 
 ############################################################
 #´Ø¿ôÌ¾¡§¤Ê¤·
@@ -130,38 +132,40 @@ DD=`date +'%d'`
 # GDATE5=`date -v -5d +'%b %e'`
 # GDATE4=`date -v -4d +'%b %e'`
 # GDATE3=`date -v -3d +'%b %e'`
-GDATE2=`date -v -2d +'%b %e'`
-GDATE1=`date -v -1d +'%b %e'`
-GDATE0=`date +'%b %e'`
+# GDATE2=`date -v -2d +'%b %e'`
+# GDATE1=`date -v -1d +'%b %e'`
+# GDATE0=`date +'%b %e'`
 # OPT=
+GDATE1=`env TZ=JST+15 date +'%b %e'`
+GDATE0=`env TZ=JST-9  date +'%b %e'`
 GREPDATE="${GDATE1}|${GDATE0}"
 #GREPDATE="${GDATE0}"
 # export GREPDATE
 
-while getopts 1234567n OPT
-do
-  case $OPT in
-      7)  GREPDATE="${GDATE7}|${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      6)  GREPDATE="${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      5)  GREPDATE="${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      4)  GREPDATE="${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      3)  GREPDATE="${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      2)  GREPDATE="${GDATE2}|${GDATE1}|${GDATE0}"
-	  ;;
-      1)  GREPDATE="${GDATE1}|${GDATE0}"
-	  ;;
-      n)  COLORMODE=OFF
-	  ;;
-      \?) echo "Usage: $0 [-1234567]" 1>&2 
-          exit 1   
-          ;;
-  esac
-done
+# while getopts 1234567n OPT
+# do
+#   case $OPT in
+#       7)  GREPDATE="${GDATE7}|${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       6)  GREPDATE="${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       5)  GREPDATE="${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       4)  GREPDATE="${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       3)  GREPDATE="${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       2)  GREPDATE="${GDATE2}|${GDATE1}|${GDATE0}"
+# 	  ;;
+#       1)  GREPDATE="${GDATE1}|${GDATE0}"
+# 	  ;;
+#       n)  COLORMODE=OFF
+# 	  ;;
+#       \?) echo "Usage: $0 [-1234567]" 1>&2 
+#           exit 1   
+#           ;;
+#   esac
+# done
 
 shift `expr $OPTIND - 1`
 
@@ -193,11 +197,12 @@ CheckProcess(){
 
 ColoringStream(){
     sed \
-	-e "s@\("$_HOSTNAME"\)@[34m\1[0m@g" \
+	-e "s@\("$_HOSTNAME"\)@[36m\1[0m@g" \
 	-e 's@\(mach_kernel\)@[33m\1[0m@g' \
 	-e 's@\([Ee][Rr][Rr][Oo][Rr]\)@[31;40;1m\1[0m@g' \
 	-e 's@\([Cc][Rr][Aa][Ss][Hh]\)@[31;40;1m\1[0m@g' \
 	-e 's@\([Ff][Aa][Ii][Ll]\)@[31;40;1m\1[0m@g' \
+	-e 's@\([Ff][Aa][Tt][Aa][Ll]\)@[31;40;1m\1[0m@g' \
 	$1
 }
 
@@ -222,50 +227,22 @@ CheckLog(){
       then
 	  case ${FILETYPE} in
  	      *.gz)
-		  echo "Hello!!!  ${LogList}"
- 	          zcat ${LogList} | egrep "${GREPDATE}" | ColoringStream | ${PAGER} -R
+ 	          ${SUDO} zcat ${LogList} | egrep "${GREPDATE}" | ColoringStream | ${PAGER} -R
  		  ;;
  	      *) 
-		  echo "KoNiChiwa! a${LogList}b"
-   	          egrep "${GREPDATE}" ${LogList}  | ColoringStream |${PAGER} -R
+   	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | ColoringStream |${PAGER} -R
  		  ;;
  	  esac
        else
  	  case ${FILETYPE} in
  	      *.gz) 
-		  echo "NiiHao! ${LogList}"
- 		  zcat ${LogList} | egrep "${GREPDATE}"  |  ${PAGER} 
+ 		  ${SUDO} zcat ${LogList} | egrep "${GREPDATE}"  |  ${PAGER} 
  		  ;;
  	      *) 
-		  echo "BARO! ${LogList}"
-                   egrep "${GREPDATE}" ${LogList} |  ${PAGER} -R
-                   egrep "${GREPDATE}" ${LogList} |  ${PAGER} 
+                  ${SUDO} egrep "${GREPDATE}" ${LogList} |  ${PAGER} 
  		  ;;
  	  esac
        fi
-
-
-#       if [ "${WHATOS}" = "FREEBSD" -a "${COLORMODE}" = "ON" ]
-#       then 
-# 	  case $LogList in
-# 	      *.gz) 
-# 	          zcat ${LogList} | ${COLORISE}  | egrep "${GREPDATE}" | ${PAGER} -R
-# 		  ;;
-# 	      *) 
-#   	          ${COLORISE} ${LogList} | egrep "${GREPDATE}" | ${PAGER} -R
-# 		  ;;
-# 	  esac
-#       else
-# 	  case $LogList in
-# 	      *.gz) 
-# 		  zcat ${LogList} | egrep "${GREPDATE}"  | ${PAGER} 
-# 		  ;;
-# 	      *) 
-#                   egrep "${GREPDATE}" ${LogList} | ColoringStream | ${PAGER} -R
-# 		  ;;
-# 	  esac
-#       fi
-
 
       ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
       read ans
@@ -326,6 +303,14 @@ CheckEtc(){
     done
 }
 
+
+SUDO=${SUDO:="NO"}
+if [ ${SUDO} = "yes" ]
+then
+    UsingSudo
+else
+    SUDO=""
+fi 
 CheckProcess
 CheckLog
 #CheckEtc
