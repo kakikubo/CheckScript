@@ -312,7 +312,7 @@ CheckLog(){
       ${ECHO}  "### Log check ( ${NOR}${LogList}${END} ) ###"
       read ans
 
-      if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" ] 
+      if [ ${COLOR} = "YES" ]
       then
 	  case ${FILETYPE} in
  	      *.gz)
@@ -361,7 +361,7 @@ CheckBackup(){
       ${ECHO}  "### Backup check ( ${NOR}${LogList}${END} ) ###"
       read ans
 
-      if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" ] 
+      if [ ${COLOR} = "YES" ]
       then
           case ${FILETYPE} in
               *.gz)
