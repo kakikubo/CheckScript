@@ -182,7 +182,7 @@ Ignoring(){
     then
 	cat $1
     else
-	egrep -v ${IGNORE} $1 
+	egrep -v "${IGNORE}" $1 
     fi
 }
 
@@ -249,22 +249,18 @@ CheckLog(){
       then
 	  case ${FILETYPE} in
  	      *.gz)
-		  echo "hello1"
  	          ${SUDO} zcat ${LogList} | Ignoring | egrep "${GREPDATE}" | ColoringStream | ${PAGER} -R
  		  ;;
  	      *) 
-		  echo "hello2"
    	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring |ColoringStream |${PAGER} -R
  		  ;;
  	  esac
        else
  	  case ${FILETYPE} in
  	      *.gz) 
-		  echo "hello3"
  		  ${SUDO} zcat ${LogList} | Ignoring |egrep "${GREPDATE}"  |  ${PAGER} 
  		  ;;
  	      *) 
-		  echo "hello4"
                   ${SUDO} egrep "${GREPDATE}" ${LogList} | Ignoring|  ${PAGER} 
  		  ;;
  	  esac
