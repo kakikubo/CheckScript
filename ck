@@ -25,11 +25,12 @@ export PATH LANG
 # 懸念点としてはlessのバージョンまでをも見る事ができない点である。
 ############################################################
 PAGER=${PAGER:=more}
-if [ ${PAGER} = "jless" ]
-then
-    PAGER="less -X"
-    export PAGER
-fi
+# if [ ${PAGER} = "jless" ]
+# then
+#     PAGER="less -X -R"
+#     export PAGER
+# fi
+
 
 ############################################################
 # sudoを使用する為の関数を定義
