@@ -20,11 +20,24 @@ export PATH LANG
 ############################################################
 # ページャが指定されているかどうかのチェック
 # 指定されていない場合はmoreを使用
-# PAGERにlessが設定されていた場合はカラーリングが有効となる。
-# 上でLANG=Cとしているので jlessにする必要はないだろう。
-# 懸念点としてはlessのバージョンまでをも見る事ができない点である。
+# PAGERにlessが設定されていた場合で且つ、ヴァージョンが358以降で
+# あればカラーリングが有効となる。
 ############################################################
 PAGER=${PAGER:=more}
+COLOR="NO"
+export COLOR PAGER
+
+if [ ${PAGER} = "jless" -o ${PAGER} = "less" ]
+then
+    LESSVERSION=`${PAGER} -V | head -1 | awk '{print $2}' `
+    if [ ${LESSVERSION} -gt 340 ]
+    then 
+	LESS="-X -R"
+	export LESS
+	COLOR="YES"
+	export COLOR
+    fi
+fi
 # if [ ${PAGER} = "jless" ]
 # then
 #     PAGER="less -X -R"
@@ -222,33 +235,60 @@ CheckSyslog(){
       ${ECHO}  "### Log check ( ${NOR}${LogList}${END} ) ###"
       read ans
 
-      if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" ] 
+      if [ ${COLOR} = "YES" ]
       then
 	  case ${FILETYPE} in
  	      *.gz)
  	          ${SUDO} zcat ${LogList} | Ignoring | 
 		  egrep "${GREPDATE}" | ColoringStream | 
-		  ${PAGER} -R -X
+		  ${PAGER} 
  		  ;;
  	      *) 
    	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring |
 		  ColoringStream |
-		  ${PAGER} -R -X
+		  ${PAGER} 
  		  ;;
  	  esac
-       else
- 	  case ${FILETYPE} in
- 	      *.gz) 
- 		  ${SUDO} zcat ${LogList} | Ignoring |
-		  egrep "${GREPDATE}"  |  
+      else
+	  case ${FILETYPE} in
+ 	      *.gz)
+ 	          ${SUDO} zcat ${LogList} | Ignoring | 
+		  egrep "${GREPDATE}" |
 		  ${PAGER} 
  		  ;;
  	      *) 
-                  ${SUDO} egrep "${GREPDATE}" ${LogList} | Ignoring|
+   	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring |
 		  ${PAGER} 
  		  ;;
  	  esac
-       fi
+      fi
+#        if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" -a ${LESSVERSION} -gt 340 ] 
+#        then
+# 	  case ${FILETYPE} in
+#  	      *.gz)
+#  	          ${SUDO} zcat ${LogList} | Ignoring | 
+# 		  egrep "${GREPDATE}" | ColoringStream | 
+# 		  ${PAGER} 
+#  		  ;;
+#  	      *) 
+#    	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring |
+# 		  ColoringStream |
+# 		  ${PAGER} 
+#  		  ;;
+#  	  esac
+#        else
+#   	  case ${FILETYPE} in
+#   	      *.gz) 
+#   		  ${SUDO} zcat ${LogList} | Ignoring |
+#  		  egrep "${GREPDATE}"  |  
+#  		  ${PAGER} 
+#   		  ;;
+#   	      *) 
+#                    ${SUDO} egrep "${GREPDATE}" ${LogList} | Ignoring|
+#  		  ${PAGER} 
+#   		  ;;
+#   	  esac
+#         fi
 
 #      ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
       read ans
