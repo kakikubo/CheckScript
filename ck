@@ -248,26 +248,16 @@ CheckSyslog(){
       ${ECHO}  "### Log check ( ${NOR}${LogList}${END} ) ###"
       read ans
 
-      if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" ] 
-      then
-	  case ${FILETYPE} in
- 	      *.gz)
- 	          ${SUDO} zcat ${LogList} | Ignoring | egrep "${GREPDATE}" | ColoringStream | ${PAGER} -R
- 		  ;;
- 	      *) 
-   	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring |ColoringStream |${PAGER} -R
- 		  ;;
- 	  esac
-       else
- 	  case ${FILETYPE} in
- 	      *.gz) 
- 		  ${SUDO} zcat ${LogList} | Ignoring |egrep "${GREPDATE}"  |  ${PAGER} 
- 		  ;;
- 	      *) 
-                  ${SUDO} egrep "${GREPDATE}" ${LogList} | Ignoring|  ${PAGER} 
- 		  ;;
- 	  esac
-       fi
+      case ${FILETYPE} in
+ 	  *.gz)
+ 	      ${SUDO} zcat ${LogList} | Ignoring | 
+	      egrep "${GREPDATE}" | ColoringStream | ${PAGER} -R
+ 	      ;;
+ 	  *) 
+   	      ${SUDO} egrep "${GREPDATE}" ${LogList}  | 
+	      Ignoring |ColoringStream |${PAGER} -R
+ 	      ;;
+      esac
 
       ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
       read ans
@@ -291,26 +281,17 @@ CheckLog(){
       ${ECHO}  "### Log check ( ${NOR}${LogList}${END} ) ###"
       read ans
 
-      if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" ] 
-      then
-	  case ${FILETYPE} in
- 	      *.gz)
- 	          ${SUDO} zcat ${LogList} | Ignoring  | ColoringStream | ${PAGER} -R
- 		  ;;
- 	      *) 
-   	          ${SUDO} cat ${LogList}  | Ignoring |ColoringStream |${PAGER} -R
- 		  ;;
- 	  esac
-       else
- 	  case ${FILETYPE} in
- 	      *.gz) 
- 		  ${SUDO} zcat ${LogList} | Ignoring  |  ${PAGER} 
- 		  ;;
- 	      *) 
-                  ${SUDO} cat ${LogList} | Ignoring|  ${PAGER} 
- 		  ;;
- 	  esac
-       fi
+
+      case ${FILETYPE} in
+ 	  *.gz)
+ 	      ${SUDO} zcat ${LogList} | Ignoring  |
+	      ColoringStream | ${PAGER} -R
+ 	      ;;
+ 	  *) 
+   	      ${SUDO} cat ${LogList}  | Ignoring |
+	      ColoringStream |${PAGER} -R
+ 	      ;;
+      esac
 
       ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
       read ans
