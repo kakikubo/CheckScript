@@ -18,6 +18,14 @@ SYSLOG="/var/log/messages \
 # 直接デバイスをかきこんでください。
 TAPE="/dev/nst0"
 
+#
+# バックアップチェック
+#
+BACKUPLOG="/var/log/messages\
+	   /var/log/messages.1"
+
+BackupWord="backup:"
+
 # 以下は普通のファイルを閲覧します。一応、色付けもします。
 #
 LOG="/var/log/xdm.log"

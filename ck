@@ -141,33 +141,6 @@ DD=`LANG=C date +'%d'`
 GDATE1=`env TZ=JST+15 LANG=C date +'%b %e'`
 GDATE0=`env TZ=JST-9  LANG=C date +'%b %e'`
 GREPDATE="${GDATE1}|${GDATE0}"
-#GREPDATE="${GDATE0}"
-# export GREPDATE
-
-# while getopts 1234567n OPT
-# do
-#   case $OPT in
-#       7)  GREPDATE="${GDATE7}|${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       6)  GREPDATE="${GDATE6}|${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       5)  GREPDATE="${GDATE5}|${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       4)  GREPDATE="${GDATE4}|${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       3)  GREPDATE="${GDATE3}|${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       2)  GREPDATE="${GDATE2}|${GDATE1}|${GDATE0}"
-# 	  ;;
-#       1)  GREPDATE="${GDATE1}|${GDATE0}"
-# 	  ;;
-#       n)  COLORMODE=OFF
-# 	  ;;
-#       \?) echo "Usage: $0 [-1234567]" 1>&2 
-#           exit 1   
-#           ;;
-#   esac
-# done
 
 shift `expr $OPTIND - 1`
 
@@ -225,8 +198,10 @@ CheckProcess(){
     do
       ${ECHO}  "### Process check ( ${NOR}${ProcessList}${END} ) ###"
       read ans
-      ${PS} | grep -v grep | grep ${ProcessList} | ${PAGER}
-      ${ECHO}  "#--- The check of a ${NOR}${ProcessList}${END} finished ---#" 
+      ${PS} | 
+      grep -v grep | 
+      grep ${ProcessList} | 
+      sed -e "s@${ProcessList}@[35;1m\1[0m@g"
       read ans
     done
 }
@@ -252,19 +227,26 @@ CheckSyslog(){
       then
 	  case ${FILETYPE} in
  	      *.gz)
- 	          ${SUDO} zcat ${LogList} | Ignoring | egrep "${GREPDATE}" | ColoringStream | ${PAGER} -R
+ 	          ${SUDO} zcat ${LogList} | Ignoring | 
+		  egrep "${GREPDATE}" | ColoringStream | 
+		  ${PAGER} -R
  		  ;;
  	      *) 
-   	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring |ColoringStream |${PAGER} -R
+   	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring |
+		  ColoringStream |
+		  ${PAGER} -R
  		  ;;
  	  esac
        else
  	  case ${FILETYPE} in
  	      *.gz) 
- 		  ${SUDO} zcat ${LogList} | Ignoring |egrep "${GREPDATE}"  |  ${PAGER} 
+ 		  ${SUDO} zcat ${LogList} | Ignoring |
+		  egrep "${GREPDATE}"  |  
+		  ${PAGER} 
  		  ;;
  	      *) 
-                  ${SUDO} egrep "${GREPDATE}" ${LogList} | Ignoring|  ${PAGER} 
+                  ${SUDO} egrep "${GREPDATE}" ${LogList} | Ignoring|
+		  ${PAGER} 
  		  ;;
  	  esac
        fi
@@ -295,19 +277,24 @@ CheckLog(){
       then
 	  case ${FILETYPE} in
  	      *.gz)
- 	          ${SUDO} zcat ${LogList} | Ignoring  | ColoringStream | ${PAGER} -R
+ 	          ${SUDO} zcat ${LogList} | Ignoring | 
+		  ColoringStream | 
+		  ${PAGER} -R
  		  ;;
  	      *) 
-   	          ${SUDO} cat ${LogList}  | Ignoring |ColoringStream |${PAGER} -R
+   	          ${SUDO} cat ${LogList}  | Ignoring |
+		  ColoringStream |${PAGER} -R
  		  ;;
  	  esac
        else
  	  case ${FILETYPE} in
  	      *.gz) 
- 		  ${SUDO} zcat ${LogList} | Ignoring  |  ${PAGER} 
+ 		  ${SUDO} zcat ${LogList} | Ignoring  |
+		  ${PAGER} 
  		  ;;
  	      *) 
-                  ${SUDO} cat ${LogList} | Ignoring|  ${PAGER} 
+                  ${SUDO} cat ${LogList} | Ignoring|
+		  ${PAGER} 
  		  ;;
  	  esac
        fi
@@ -316,6 +303,60 @@ CheckLog(){
       read ans
     done
 }
+
+############################################################
+#´Ø¿ôÌ¾¡§CheckBackup
+#µ¡Ç½  ¡§¥Ð¥Ã¥¯¥¢¥Ã¥×¤Î¥Á¥§¥Ã¥¯¡£
+#ÆþÎÏ  ¡§$LogListÊÑ¿ô¤Ë½ñ¤«¤ì¤¿¥í¥°¤Î¥ê¥¹¥È
+#½ÐÎÏ  ¡§¥í¥°¤«¤é $BackupWord ¤Ç»ØÄê¤µ¤ì¤¿¤â¤Î¤ò grep ¤·¤Æ
+#        ¥Ú¡¼¥¸¥ã¤Ç¸«¤ë
+#
+############################################################
+CheckBackup(){
+    for LogList in `echo ${BACKUPLOG}`
+    do
+      LogList=`echo ${LogList} | sed -e "s/YYMMDD/${YY}${MM}${DD}/"`
+      LogList=`echo ${LogList} | sed -e "s/YYYYMMDD/${YYYY}${MM}${DD}/"`
+      FILETYPE=`basename ${LogList}`
+          
+      ${ECHO}  "### Backup check ( ${NOR}${LogList}${END} ) ###"
+      read ans
+
+      if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" ] 
+      then
+          case ${FILETYPE} in
+              *.gz)
+                  ${SUDO} zcat ${LogList} | egrep "${GREPDATE}" | 
+		  grep ${BackupWord} | ColoringStream |
+		  ${PAGER} -R
+                  ;;
+              *) 
+                  ${SUDO} cat ${LogList}  | egrep "${GREPDATE}" | 
+		  grep ${BackupWord} | ColoringStream | 
+		  ${PAGER} -R
+                  ;;
+          esac
+       else
+          case ${FILETYPE} in
+              *.gz) 
+                  ${SUDO} zcat ${LogList} | egrep "${GREPDATE}" | 
+		  grep ${BackupWord} | 
+		  ${PAGER} 
+                  ;;
+              *) 
+                  ${SUDO} cat ${LogList} | egrep "${GREPDATE}" | 
+		  grep ${BackupWord} | 
+		  ${PAGER} 
+                  ;;
+          esac
+       fi
+
+      ${ECHO}  "#--- The  Backup check of a ${NOR}${LogList}${END} finished ---#
+" 
+      read ans
+    done
+}
+
 
 
 
