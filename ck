@@ -10,12 +10,11 @@
 ############################################################
 # パスの指定。設定ファイルの読み込み。LANGはCを使用
 ############################################################
-PATH="/usr/local/bin/:/usr/bin:/bin"
+PATH="/usr/local/bin/:/usr/bin:/bin" ; export PATH
 . ${HOME}/.ck
 #LANG=C
 _HOSTNAME=`hostname | sed 's/\..*//'`
 
-export PATH LANG
 
 ############################################################
 # ページャが指定されているかどうかのチェック
@@ -23,19 +22,17 @@ export PATH LANG
 # PAGERにlessが設定されていた場合で且つ、ヴァージョンが358以降で
 # あればカラーリングが有効となる。
 ############################################################
-PAGER=${PAGER:=more}
-COLOR="NO"
-export COLOR PAGER
+PAGER=${PAGER:=more} ; export PAGER
+#LESS=${LESS:="-E"}  ; exportこれは危険？ 
+COLOR="NO" ; export COLOR
 
 if [ ${PAGER} = "jless" -o ${PAGER} = "less" ]
 then
     LESSVERSION=`${PAGER} -V | head -1 | awk '{print $2}' `
     if [ ${LESSVERSION} -gt 340 ]
     then 
-	LESS="-X -R"
-	export LESS
-	COLOR="YES"
-	export COLOR
+	LESS="-X -R -E" ; export LESS
+	COLOR="YES"     ; export COLOR
     fi
 fi
 # if [ ${PAGER} = "jless" ]
@@ -318,11 +315,12 @@ CheckLog(){
  	      *.gz)
  	          ${SUDO} zcat ${LogList} | Ignoring | 
 		  ColoringStream | 
-		  ${PAGER} -R -X
+		  ${PAGER} 
  		  ;;
  	      *) 
    	          ${SUDO} cat ${LogList}  | Ignoring |
-		  ColoringStream |${PAGER} -R -X
+		  ColoringStream |
+		  ${PAGER} 
  		  ;;
  	  esac
        else
@@ -367,12 +365,12 @@ CheckBackup(){
               *.gz)
                   ${SUDO} zcat ${LogList} | egrep "${GREPDATE}" | 
 		  grep ${BackupWord} | ColoringStream |
-		  ${PAGER} -R -X
+		  ${PAGER} 
                   ;;
               *) 
                   ${SUDO} cat ${LogList}  | egrep "${GREPDATE}" | 
 		  grep ${BackupWord} | ColoringStream | 
-		  ${PAGER} -R -X
+		  ${PAGER} 
                   ;;
           esac
        else
