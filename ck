@@ -53,11 +53,11 @@ UsingSudo(){
 }
 
 ############################################################
-#¥×¥í¥»¥¹¥Á¥§¥Ã¥¯¤Ë»ÈÍÑ¤¹¤ë¥«¥é¡¼¤òÄêµÁ
+#¥×¥í¥»¥¹¥Á¥§¥Ã¥¯¤Ë»ÈÍÑ¤¹¤ë¥«¥é¡¼¤òÄêµÁ(process color)
 ############################################################
-NOR="\033[32;40;1m"
+NOR="\033[34;1m"
 ERR="\033[31;40;1m"
-END="\033[37;40;m"
+END="\033[30;m"
 
 
 
@@ -200,8 +200,7 @@ CheckProcess(){
       read ans
       ${PS} | 
       grep -v grep | 
-      grep ${ProcessList} | 
-      sed -e "s@${ProcessList}@[35;1m\1[0m@g"
+      grep ${ProcessList} 
       read ans
     done
 }
@@ -229,12 +228,12 @@ CheckSyslog(){
  	      *.gz)
  	          ${SUDO} zcat ${LogList} | Ignoring | 
 		  egrep "${GREPDATE}" | ColoringStream | 
-		  ${PAGER} -R
+		  ${PAGER} -R -X
  		  ;;
  	      *) 
    	          ${SUDO} egrep "${GREPDATE}" ${LogList}  | Ignoring |
 		  ColoringStream |
-		  ${PAGER} -R
+		  ${PAGER} -R -X
  		  ;;
  	  esac
        else
@@ -251,7 +250,7 @@ CheckSyslog(){
  	  esac
        fi
 
-      ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
+#      ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
       read ans
     done
 }
@@ -279,11 +278,11 @@ CheckLog(){
  	      *.gz)
  	          ${SUDO} zcat ${LogList} | Ignoring | 
 		  ColoringStream | 
-		  ${PAGER} -R
+		  ${PAGER} -R -X
  		  ;;
  	      *) 
    	          ${SUDO} cat ${LogList}  | Ignoring |
-		  ColoringStream |${PAGER} -R
+		  ColoringStream |${PAGER} -R -X
  		  ;;
  	  esac
        else
@@ -299,7 +298,7 @@ CheckLog(){
  	  esac
        fi
 
-      ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
+#      ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
       read ans
     done
 }
@@ -328,12 +327,12 @@ CheckBackup(){
               *.gz)
                   ${SUDO} zcat ${LogList} | egrep "${GREPDATE}" | 
 		  grep ${BackupWord} | ColoringStream |
-		  ${PAGER} -R
+		  ${PAGER} -R -X
                   ;;
               *) 
                   ${SUDO} cat ${LogList}  | egrep "${GREPDATE}" | 
 		  grep ${BackupWord} | ColoringStream | 
-		  ${PAGER} -R
+		  ${PAGER} -R -X
                   ;;
           esac
        else
@@ -351,8 +350,7 @@ CheckBackup(){
           esac
        fi
 
-      ${ECHO}  "#--- The  Backup check of a ${NOR}${LogList}${END} finished ---#
-" 
+#      ${ECHO}  "#--- The  Backup check of a ${NOR}${LogList}${END} finished ---
       read ans
     done
 }
@@ -426,7 +424,7 @@ echo "##### Tape Device Check #####"
 echo "Please hit ENTER to continue."
 
         read ans
-        ${SUDO} mt -f ${TAPE} status | grep ONLINE
+        ${SUDO} mt -f ${TAPE} status | grep ONLINE >/dev/null 2>&1 
         if [ $? -eq 0 ]; then
                 echo 'Tape is Online' | ColoringStream 
                 exit 0
@@ -452,6 +450,7 @@ CheckProcess
 CheckSyslog
 CheckLog
 CheckEtc
+CheckBackup
 
 TAPE=${TAPE:="NO"}
 if [ ${TAPE} != "NO" ]
