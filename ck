@@ -4,8 +4,8 @@
 # ck
 #
 # configlation file is ~/.ck
-#
-#
+
+
 
 ############################################################
 # パスの指定。設定ファイルの読み込み。LANGはCを使用
@@ -27,7 +27,7 @@ export PATH LANG
 PAGER=${PAGER:=more}
 if [ ${PAGER} = "jless" ]
 then
-    PAGER=less
+    PAGER="less -X"
     export PAGER
 fi
 
@@ -229,14 +229,14 @@ CheckProcess(){
 }
 
 ############################################################
-#関数名：CheckLog
+#関数名：CheckSyslog
 #機能  ：ログのチェック。
 #入力  ：$LogList変数に書かれたログのリスト
-#出力  ：ログをページャで見る
+#出力  ：ログ(Syslog形式。日付が入っているもの)をページャで見る
 #
 ############################################################
-CheckLog(){
-    for LogList in `echo ${LOG}`
+CheckSyslog(){
+    for LogList in `echo ${SYSLOG}`
     do
       LogList=`echo ${LogList} | sed -e "s/YYMMDD/${YY}${MM}${DD}/"`
       LogList=`echo ${LogList} | sed -e "s/YYYYMMDD/${YYYY}${MM}${DD}/"`
@@ -262,6 +262,49 @@ CheckLog(){
  		  ;;
  	      *) 
                   ${SUDO} egrep "${GREPDATE}" ${LogList} | Ignoring|  ${PAGER} 
+ 		  ;;
+ 	  esac
+       fi
+
+      ${ECHO}  "#--- The check of a ${NOR}${LogList}${END} finished ---#" 
+      read ans
+    done
+}
+
+############################################################
+#関数名：CheckLog
+#機能  ：ログのチェック。
+#入力  ：$LogList変数に書かれたログのリスト
+#出力  ：ログ(生のログ。日付などが入っていないもの)をページャで見る
+#
+############################################################
+CheckLog(){
+    for LogList in `echo ${LOG}`
+    do
+      LogList=`echo ${LogList} | sed -e "s/YYMMDD/${YY}${MM}${DD}/"`
+      LogList=`echo ${LogList} | sed -e "s/YYYYMMDD/${YYYY}${MM}${DD}/"`
+      FILETYPE=`basename ${LogList}`
+	  
+      ${ECHO}  "### Log check ( ${NOR}${LogList}${END} ) ###"
+      read ans
+
+      if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" ] 
+      then
+	  case ${FILETYPE} in
+ 	      *.gz)
+ 	          ${SUDO} zcat ${LogList} | Ignoring  | ColoringStream | ${PAGER} -R
+ 		  ;;
+ 	      *) 
+   	          ${SUDO} cat ${LogList}  | Ignoring |ColoringStream |${PAGER} -R
+ 		  ;;
+ 	  esac
+       else
+ 	  case ${FILETYPE} in
+ 	      *.gz) 
+ 		  ${SUDO} zcat ${LogList} | Ignoring  |  ${PAGER} 
+ 		  ;;
+ 	      *) 
+                  ${SUDO} cat ${LogList} | Ignoring|  ${PAGER} 
  		  ;;
  	  esac
        fi
@@ -334,6 +377,7 @@ else
     SUDO=""
 fi 
 CheckProcess
+CheckSyslog
 CheckLog
 #CheckEtc
 
@@ -352,7 +396,7 @@ CheckLog
 
 # for I in `echo ${IGNRULE}`
 # do
-#   for l in `echo $LOG`
+#   for l in `echo $SYSLOG`
 #     do
 #     if [ $l = $I ] 
 #     then
