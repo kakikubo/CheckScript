@@ -227,7 +227,7 @@ CheckLog(){
       ${ECHO}  "### Log check ( ${NOR}${LogList}${END} ) ###"
       read ans
 
-      if [ "${PAGER}" = "less" ] 
+      if [ "${PAGER}" = "less" -o "${PAGER}" = "jless" ] 
       then
 	  case ${Loglist} in
  	      *.gz) 
@@ -240,10 +240,10 @@ CheckLog(){
        else
  	  case $LogList in
  	      *.gz) 
- 		  zcat ${LogList} | egrep "${GREPDATE}"  | ${PAGER} 
+ 		  zcat ${LogList} | egrep "${GREPDATE}"  |  ${PAGER} 
  		  ;;
  	      *) 
-                   egrep "${GREPDATE}" ${LogList} | ColoringStream | ${PAGER} -R
+                   egrep "${GREPDATE}" ${LogList} |  ${PAGER} -R
  		  ;;
  	  esac
        fi
