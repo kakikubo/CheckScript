@@ -3,7 +3,7 @@
 # $Id$
 # ck
 #
-# configlation file is ~/bin/ck.conf
+# configlation file is ~/.ck
 #
 #
 
@@ -199,11 +199,13 @@ Ignoring(){
 ColoringStream(){
     sed \
 	-e "s@\("$_HOSTNAME"\)@[34;47;1m\1[0m@g" \
+	-e "s@\($GDATE1\)@[35;1m\1[0m@g" \
+	-e "s@\($GDATE0\)@[35;1m\1[0m@g" \
 	-e 's@\(mach_kernel\)@[33m\1[0m@g' \
 	-e 's@\([Ee][Rr][Rr][Oo][Rr]\)@[31;40;1m\1[0m@g' \
 	-e 's@\([Cc][Rr][Aa][Ss][Hh]\)@[31;40;1m\1[0m@g' \
 	-e 's@\([Ff][Aa][Ii][Ll]\)@[33;40;1m\1[0m@g' \
-	-e 's@\([Ww][Aa][Rr][Nn][Ii][Nn][Gg]\)@[33;46;1m\1[0m@g' \
+	-e 's@\([Ww][Aa][Rr][Nn][Ii][Nn][Gg]\)@[33;40;1m\1[0m@g' \
 	-e 's@\([Ff][Aa][Tt][Aa][Ll]\)@[31;40;1m\1[0m@g' \
 	$1
 }
