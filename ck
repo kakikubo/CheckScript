@@ -99,11 +99,7 @@ Ostype(){
 ############################################################
 WHATOS=`Ostype`
 case "${WHATOS}" in
-	LINUX) PS='/bin/ps -ax'
-			ECHO='echo -e'
-			break
-			;;
-	FREEBSD) PS='/bin/ps -ax'
+	FREEBSD|MacOSX|LINUX) PS='/bin/ps -ax'
 			ECHO='echo -e'
 			break
 			;;
@@ -112,6 +108,7 @@ case "${WHATOS}" in
 			break
 			;;
 	*)		PS='/bin/ps -auxwww'
+			ECHO='echo'
 			;;
 esac
 
