@@ -383,45 +383,6 @@ CheckLog
 CheckEtc
 
 
-### Check the /etc/hogehoge
-###  ここはまたつくることにするか…
-# CheckEtc(){
-#     for ETC in `echo ${CHECKETC}`
-#     do
-#       ls -1tr ${ETC}
-#       diff -u1 ${ETC} ${HOME}/.ck/
-#     done
-# }
-  
-# IG="("
-
-# for I in `echo ${IGNRULE}`
-# do
-#   for l in `echo $SYSLOG`
-#     do
-#     if [ $l = $I ] 
-#     then
-#       echo $I'はログファイル'
-#       break
-#     else
-#       echo $I'は無視する文字列'
-#       IG=${IG}$I"|"
-#       break
-#     fi
-#   done
-# done
-# IG="${IG}grep)"
-# echo '無視するもじれつ総合'$IG
-# #exit
-
-
-
-#  Search the Os type Function
-#
-# `uname -s`コマンドの結果によってコマンド(psなど)を分岐処理させれば
-# 汎用性が増すのでは？
-
-
 # memo
 #
 #   customer 		os
