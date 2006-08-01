@@ -1,0 +1,58 @@
+#!/bin/sh
+
+# $Id$
+LANG=C
+PATH=/usr/bin:/bin:/usr/local/bin:/sbin:/usr/sbin
+ALERT=NO
+MAILTO='kakikubo@sra-osc.ne.jp'
+DATE=`date +%Y/%m/%d/%H:%M`
+HOST=`hostname -s`
+VMST_VAL="`vmstat 5 2 | tail -1`"
+TOTALMEM=`awk 'NR == 4' /proc/meminfo  | awk '{print $2}'`
+MEM_THRESH=90   
+CPU_THRESH=90
+
+calcUsageMEM() {
+	usgMEM=`
+		echo $1 \
+		| awk -v totalmem=${TOTALMEM} '
+			{ freemem = $5 + $6 + $7 }
+			END { print int(freemem / totalmem * 100) }
+		'`
+  echo "${usgMEM}"
+}
+
+checkCPU() {
+       CPU_IDLE=`echo ${VMST_VAL} | awk '{print $NF}'`
+       CPU_USED=`expr 100 - ${CPU_IDLE}`
+       echo "${CPU_USED}"
+}
+
+SendAlert(){
+    case ${ALERT} in
+    NO)
+	    exit 0
+	    ;;
+    YES)
+    nkf -j <<- END | mail -s "${HOST} report - $0 " ${MAILTO}
+	${DATE}  ${HOST}
+	----------------------------------------------------------------------
+	Cpu    rate of use reached ${Cpu} %
+	Memory rate of use reached ${Memory} %
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	`top -b -n3 -d1` 
+	END
+    	;;
+    esac
+}
+
+Cpu=`checkCPU "${VMST_VAL}"`
+Memory=`calcUsageMEM "${VMST_VAL}"`
+
+if [ ${Memory} -gt ${MEM_THRESH} ] ; then
+    ALERT=YES
+elif [ ${Cpu} -gt ${CPU_THRESH} ] ; then
+    ALERT=YES
+fi
+
+SendAlert

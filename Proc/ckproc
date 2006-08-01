@@ -1,0 +1,93 @@
+#!/bin/sh
+
+# $Id$
+LANG=C
+PATH=/usr/bin:/bin:/usr/local/bin:/sbin:/usr/sbin
+ALERT=NO
+MAILTO='kakikubo@sra-osc.ne.jp'
+DATE=`date +%Y/%m/%d/%H:%M`
+HOST=`hostname -s`
+
+SendAlert(){
+    case ${ALERT} in
+    NO)
+	    exit 0
+	    ;;
+    YES)
+    nkf -j <<- END | mail -s "${HOST} report - $0 " ${MAILTO}
+	${DATE}  ${HOST}
+	----------------------------------------------------------------------
+	`printf " ${MESSAGE} "` 
+	END
+    	    ;;
+    esac
+}
+
+
+CheckProcess(){
+  case ${HOST} in
+	  djsv11) PROCS="postmaster crond" ;;
+	  djsv12) PROCS="java postmaster httpd crond" ;;
+	  djsv13) PROCS="java httpd nfsd crond" ;;
+	  djsv14) PROCS="java crond" ;;
+	  djsv16) PROCS="crond" ;;
+	  djsv17) PROCS="crond" ;;
+	  djsv18) PROCS="named sendmail" ;;
+	  puku)   PROCS="httpd sendmail java" ;;
+  esac
+
+  for PROC in ${PROCS}
+  do
+	  PSR=`ps awx | grep ${PROC} | grep -v grep | wc -l`
+	  NSR=${NSR:=0}
+	  case ${PROCS} in
+		  postmaster)
+			  NSR=`netstat -an | \
+			  grep LISTEN |\
+			  awk '{print $4}' |\
+			  grep "^0.0.0.0:5432$" | wc -l`
+			  ;;
+		  sendmail)
+			  NSR=`netstat -an | \
+			  grep LISTEN |\
+			  awk '{print $4}' |\
+			  grep "^0.0.0.0:25$" | wc -l`
+			  ;;
+		  httpd)
+			  NSR=`netstat -an | \
+			  grep LISTEN |\
+			  awk '{print $4}' |\
+			  grep "^0.0.0.0:80$" | wc -l`
+			  ;;
+		  java)
+			  NSR=`netstat -an | \
+			  grep LISTEN |\
+			  awk '{print $4}' |\
+			  grep "^0.0.0.0:8080$" | wc -l`
+			  ;;
+		  nfsd)
+			  NSR=`netstat -an | \
+			  grep LISTEN |\
+			  awk '{print $4}' |\
+			  grep "^0.0.0.0:2049$" | wc -l`
+			  ;;
+		  named)
+			  NSR=`netstat -an | \
+			  grep LISTEN |\
+			  awk '{print $4}' |\
+			  grep "^210.248.184.34:53$" | wc -l`
+			  ;;
+          esac
+	  COUNT=`expr ${PSR} + ${NSR}`
+	  if [ ${COUNT} -eq "0" ]; then
+	      MESSAGE="${MESSAGE} \n ${PROC} down"
+	      ALERT=YES
+	  fi
+  done
+  MESSAGE=`echo "${MESSAGE}\n"`
+}
+
+
+
+CheckProcess
+SendAlert

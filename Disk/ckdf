@@ -1,0 +1,84 @@
+#!/bin/sh
+
+# $Id$
+LANG=C
+PATH=/usr/bin:/bin:/usr/local/bin:/sbin:/usr/sbin
+ALERT=NO
+MAILTO='kakikubo'
+DATE=`date +%Y/%m/%d/%H:%M`
+MINITE=`date +%M` 
+HOST=`uname -n`
+DF_LOG="${HOME}/log/df-`date +%Y%m`.csv"
+THRESH=10
+PART=`df -k | grep '^/dev/' | awk '{print $6}'`
+
+CheckUsage(){
+
+    for i in `echo "${PART}"`
+    do
+      COMP=`df -k $i | grep ^/dev |  awk '{print $5}' | sed s/%//`
+      if [ $COMP -gt $THRESH ] ; then
+	  TARGET="${TARGET} $i"
+	  ALERT=YES
+      fi
+      	  
+    done
+    MESSAGE=`df -k ${TARGET}`
+}
+
+
+WriteLog()
+{
+
+    if [ ! -d ~/log ]
+    then
+	mkdir ~/log
+    fi
+    
+    if [ ! -f ${DF_LOG} ]
+    then 
+	HEADER="DATE"
+	for p in `echo $PART`
+	do
+	  HEADER="$HEADER,$p"
+	done
+	echo ${HEADER} > ${DF_LOG}
+    fi
+
+    if [ $MINITE -eq 00 ]
+    then
+        WriteDf
+    fi
+}
+
+WriteDf()
+{
+
+    DF=$DATE
+
+    for p in `echo $i | awk '{print $5}' | sed s/%//`
+    do
+      DF="$DF,$p"
+    done
+
+    echo $DF >> $DF_LOG
+}
+
+SendAlert(){
+    case $ALERT in
+    NO)
+	    exit 0
+	    ;;
+    YES)
+    nkf -j <<- END | mail -s "${HOST} report - $0 " ${MAILTO}
+	${DATE}  ${HOST}
+	----------------------------------------------------------------------
+	`echo " ${MESSAGE} "` 
+	END
+    	    ;;
+    esac
+}
+
+CheckUsage
+WriteLog
+SendAlert

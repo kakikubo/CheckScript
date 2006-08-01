@@ -1,0 +1,61 @@
+#!/bin/sh
+
+PATH=/usr/local/bin:/usr/bin:/bin
+
+#MAIL_ADDRS='nagata@sra.co.jp tomio_ootaki@hq.digi.co.jp shoji_obata@hq.digi.co.jp Toyoki_Mori@hq.digi.co.jp'
+MAIL_ADDRS='nagata@sra.co.jp'
+HOST=`hostname`
+
+POSTMASTER=/usr/local/pgsql/bin/postmaster
+HTTPD=/usr/local/apache2/bin/httpd
+CROND=crond
+NFSD=nfsd
+JAVA=/usr/java/j2sdk1.4.1_02/bin/java
+NAMED=named
+SENDMAIL=sendmail
+
+
+sendAlertMail() {
+        mail -s "Check $HOST $PROC" ${MAIL_ADDRS} <<EOF
+
+                $HOST's $PROC was down !
+                
+                Please check $HOST.
+                
+EOF
+}
+
+
+case $HOST in
+        djsv11.taskool.com) PROCS="$POSTMASTER $CROND" ;;
+        djsv12.taskool.com) PROCS="$JAVA $POSTMASTER $HTTPD $CROND" ;;
+        djsv13.taskool.com) PROCS="$JAVA $HTTPD $NFSD $CROND" ;;
+        djsv14.taskool.com) PROCS="$JAVA $HTTPD $CROND" ;;
+        djsv16.taskool.com) PROCS="$CROND" ;;
+        djsv17.taskool.com) PROCS="$HTTPD $CROND" ;;
+        djsv18.taskool.com) PROCS="$NAMED $SENDMAIL $CROND" ;;
+esac
+
+for PROC in ${PROCS}
+do
+        case $PROC in
+                *postmaster) PORT=5432 ;;
+                *httpd) PORT=443 ;;
+                *java) PORT=8009 ;;
+                named) PORT=53 ;;
+                sendmail) PORT=25 ;;
+                nfsd|crond) if ps awx | grep $PROC | grep -v grep
+                        then
+                                continue
+                        else
+                                sendAlertMail
+                        fi ;;
+        esac
+
+        if netstat -an | grep $PORT | grep LISTEN
+        then
+                ps awx | grep $PROC | grep -v grep
+        else
+                sendAlertMail
+        fi
+done

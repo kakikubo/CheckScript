@@ -1,0 +1,5 @@
+#! /bin/sh
+
+/home/kakikubo/Hack/ChkPort/chkport.sh host pgsql &
+
+exit 0

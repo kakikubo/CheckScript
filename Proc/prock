@@ -1,0 +1,41 @@
+#!/bin/sh
+
+PATH=/usr/local/bin:/usr/bin:/bin
+
+MAIL_ADDRS='kakikubo@sra-osc.ne.jp'
+HOST=`hostname`
+
+POSTMASTER=/usr/local/pgsql/bin/postmaster
+HTTPD=/usr/local/apache2/bin/httpd
+CROND=crond
+NFSD=nfsd
+JAVA=/usr/java/j2sdk1.4.1_02/bin/java
+
+sendAlertMail() {
+        mail -s "Check $HOST $PROC" ${MAIL_ADDRS} <<- %%
+	     	       
+                $HOST's $PROC was down !
+                
+                Please check $HOST.
+	%%
+}
+
+
+case $HOST in
+	djsv11.taskool.com) PROCS="$POSTMASTER $CROND" ;;
+	djsv12.taskool.com) PROCS="$JAVA $POSTMASTER $HTTPD $CROND" ;;
+	djsv13.taskool.com) PROCS="$JAVA $HTTPD $NFSD $CROND" ;;
+	djsv14.taskool.com) PROCS="$JAVA $HTTPD $CROND" ;;
+	djsv16.taskool.com) PROCS="$CROND" ;;
+	djsv17.taskool.com) PROCS="$HTTPD $CROND" ;;
+	djsv18.taskool.com) PROCS="named sendmail" ;;
+esac
+
+for PROC in ${PROCS}
+do
+        ps awx | grep $PROC | grep -v grep
+
+        if [ $? -eq 1 ]; then
+                sendAlertMail
+        fi
+done

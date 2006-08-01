@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# $Id$
+LANG=C
+PATH=/usr/bin:/bin:/usr/local/bin:/sbin:/usr/sbin
+ALERT=NO
+MAILTO=kakikubo@sra-osc.ne.jp
+DATE=`date +%Y/%m/%d/%H:%M`
+HOST=`hostname -s`
+
+# AGENT="djsv18.taskool.com\
+# 	djsv17.taskool.com\
+# 	djsv11.taskool.com\
+# 	djsv12.taskool.com\
+# 	djsv13.taskool.com\
+# 	djsv14.taskool.com\
+# 	djsv16.taskool.com\
+# 	192.168.0.1\
+# 	192.168.0.2\
+# 	192.168.0.3"
+AGENT="127.0.0.1\
+ 	10.133.138.10\
+ 	10.133.138.99"
+PingCheck(){
+    for t in `echo $AGENT`
+    do
+      STATE=`ping -c1 $t 2>&1 | grep packet | awk '{print $7}' | sed s/%//`
+
+      if [ ${STATE}x != "0x" ];then
+	  MESSAGE=`echo "${MESSAGE}\n NG \t $t"`
+	  ALERT=YES
+      else
+	  MESSAGE=`echo "${MESSAGE}\n OK \t $t"`
+      fi
+    done
+    MESSAGE=`echo "${MESSAGE}\n"`
+}
+
+SendAlert(){
+    case $ALERT in
+    NO)
+	    exit 0
+	    ;;
+    YES)
+    nkf -j <<- END | mail -s "${HOST} report - $0 " ${MAILTO}
+	${DATE}  ${HOST}
+	----------------------------------------------------------------------
+	`printf "${MESSAGE}"`
+	END
+    	    ;;
+    esac
+}
+
+
+PingCheck
+SendAlert
