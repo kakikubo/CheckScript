@@ -2,7 +2,7 @@
 '''
 
   2007 Kakikubo Teruo
-  check_memcache.py 
+  check_memcached.py 
 
   Check Memcached Server plugin. 
   This Plugin requires the memcached-Python API. 
