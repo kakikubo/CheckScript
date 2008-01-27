@@ -34,16 +34,11 @@ if not opts.hostaddress:
 svr = u""
 svr = str(opts.hostaddress) + ":" + str(opts.port)
 mc = memcache.Client([ svr ], debug=0)
-#mc = memcache.Client({opts.hostaddress}:{opts.port}, debug=1)
-#mc = memcache.Client(["ocnblg-tc01-int:112"], debug=1)
 
 def handler(signum, frame):
-    #print 'Signal handler called with signal', signum
-    #raise IOError, "hogehogehgoehgoe"
     print "CRITICAL - timeout after " + str(opts.timeout) + " seconds"
     sys.exit(2)
 
-## Set the signal handler
 signal.signal(signal.SIGALRM, handler)
 signal.alarm(int(opts.timeout))
 
