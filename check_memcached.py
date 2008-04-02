@@ -1,21 +1,26 @@
 #! /usr/bin/env python
 '''
 
-  2007 Kakikubo Teruo
+  2008 Kakikubo Teruo
   check_memcached.py 
 
   Check Memcached Server plugin. 
   This Plugin requires the memcached-Python API. 
   This Plugin was tested only in the python 2.5 
 
+  * Wed Apr  2 20:42:56 JST 2008
+  add performance data (elapsed time)
+
 '''
 import memcache
 import signal
+import time
 import os,sys
 
 from optparse import OptionParser
 
 pid = str(os.getpid())
+
 # option
 parser = OptionParser()
 parser.add_option("-H","--hostname",dest="hostaddress",
@@ -41,6 +46,7 @@ def handler(signum, frame):
 
 signal.signal(signal.SIGALRM, handler)
 signal.alarm(int(opts.timeout))
+t1 = time.time()
 
 if not mc.set(pid,"nagios value"):
     print "CRITICAL - cannot set the value"
@@ -51,6 +57,8 @@ else:
         sys.exit(2)
     else:
 	mc.delete(pid)
-	print "OK - memcached alive"
+        t2 = time.time()
+        t3 = str(round((t2 - t1),6))
+	print "OK - memcached on " + str(opts.hostaddress) + " alive: elapsed " + t3 + " sec;|" + str(opts.hostaddress) + ":" + str(opts.port) + " time=" + t3 + "s;"
         sys.exit(0)
 
