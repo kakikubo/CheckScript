@@ -2,7 +2,7 @@
 
 PATH=/usr/local/bin:/usr/bin:/bin
 
-MAIL_ADDRS='kakikubo@sra-osc.ne.jp'
+MAIL_ADDRS='kakikubo@gmail.com'
 HOST=`hostname`
 
 POSTMASTER=/usr/local/pgsql/bin/postmaster

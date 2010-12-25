@@ -4,7 +4,7 @@
 LANG=C
 PATH=/usr/bin:/bin:/usr/local/bin:/sbin:/usr/sbin
 ALERT=NO
-MAILTO=kakikubo@sra-osc.ne.jp
+MAILTO=kakikubo@gmail.com
 DATE=`date +%Y/%m/%d/%H:%M`  ### 取得した時間
 HOST=`hostname -s`
 

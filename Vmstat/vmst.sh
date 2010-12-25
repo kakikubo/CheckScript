@@ -30,7 +30,7 @@ MEM_THRESHOLD=90    #...%(空き)
 CPU_THRESHOLD=99    #...%(空き)
 
 ####### メール通知関連の変数
-MAIL_ADDRS='kakikubo@sra-osc.ne.jp'
+MAIL_ADDRS='kakikubo@gmail.com'
 
 ####### 関数の定義
 

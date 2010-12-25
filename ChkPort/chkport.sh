@@ -2,7 +2,7 @@
 
 # $Id$
 PATH=$PATH:/usr/local/bin:/bin:/sbin:/usr/local/sbin:/usr/bin;export PATH
-MAILTO='kakikubo@sra-osc.ne.jp'
+MAILTO='kakikubo@gmail.com'
 
 Chkport(){
    perl ./chkport.pl $1 $2 >/dev/null 2>&1 || mail -s "Check Host: $1  Service: $2" ${MAILTO} <<- EOF
